@@ -1,2 +1,1 @@
-# bot
-just trying to create a discord py bot
+The ospirit Discord Bot is designed to provide a wide array of moderation tools and member-based commands, enhancing server management and user engagement. It integrates various functionalities such as user warnings, kicks, bans, message deletions, and other moderation tools, along with commands specifically for server members to manage their profiles, settings, and activities.
