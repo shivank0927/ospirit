@@ -229,7 +229,7 @@ class Moderation(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
     @commands.bot_has_guild_permissions(manage_channels=True)
-    async def createchanel(self, ctx, role: discord.Role, *, name):
+    async def createchannel(self, ctx, role: discord.Role, *, name):
         """
         Creates a new channel in the server.
         
