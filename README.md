@@ -8,24 +8,22 @@ The **ospirit Discord Bot** is designed to provide a wide array of moderation to
   - `kick`: Kicks a user from the server.
   - `ban`: Bans a user from the server.
   - `timeout`: Temporarily mutes a user for a set period.
-  - **Purge Command**: Deletes a specific number of messages from a channel.
-  - **Avatar Check**: Fetches the avatar of a user.
-  - **About User Command**: Provides information about a user.
+  - `purge`: Deletes a specific number of messages from a channel.
+  - `avatar`: Fetches the avatar of a user.
+  - `about`: Provides information about a user.
 
-- **Log System Setup**:
+- 'logs':
   - Automatically creates a `moderation` category and a `logs` channel to redirect all moderation commands, deleted/edited messages, and track when someone joins the server using an invite from someone else.
 
-- **Channel and Category Management**:
+- `createchan`, `createcat`:
   - Tracks and logs when channels or categories are created.
   - Provides channel statistics such as message counts and other key metrics.
 
-- **Server Member Commands**:
-  - Allows members to manage their profiles and settings.
+- `quote`:
   - Provides a random or specific quote when requested by a user.
 
-- **Ping Check Command**: Checks the bot’s latency to the server.
+- `ping`: Checks the bot’s latency to the server.
 
-With ospirit, you can ensure smooth moderation and provide enhanced interaction for members within your server.
 
 ## Installation
 
