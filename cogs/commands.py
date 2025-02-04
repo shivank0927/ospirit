@@ -1,8 +1,10 @@
 import discord
+import textwrap
 from discord.ext import commands
+from PIL import ImageDraw, ImageFont, Image
 from discord.ext.commands import MissingPermissions, MissingRequiredArgument
 from quotes_library import get_quotes, get_authors, get_categories
-
+from io import BytesIO
 
 
 class Commands(commands.Cog):
@@ -110,6 +112,52 @@ class Commands(commands.Cog):
         except Exception as e:
             await self.handle_error(ctx, e)
 
+    @commands.command(aliases=['cap'])
+    @commands.bot_has_guild_permissions(read_messages=True)
+    async def caption(self, ctx):
+        """Creates an image caption from a replied message."""
+        print("caption command initiated")
+
+        try:
+            if ctx.message.reference:
+                if ctx.message.reference.resolved is not None: # technically useless 
+                    reference = ctx.message.reference.resolved
+                else:
+                    message_id = ctx.message.reference.message_id
+                    reference = await ctx.channel.fetch_message(message_id)
+
+                message = reference.content
+                author = reference.author  
+
+                print(message, author)
+
+
+                width, height = 500, 250
+                font = ImageFont.truetype("fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf", 30)
+                template = Image.new("RGB", (width, height), "black")
+
+                draw = ImageDraw.Draw(template)  
+                box = draw.textbbox((0, 0), message, font=font)
+
+                x = box[2] - box[0]             # calculating position of text placing
+                y = box[3] - box[1]
+                position = ((width - x) / 2, (height - y) / 2)
+
+                draw.text(position, "\n".join(textwrap.wrap(message, width=25)), fill=(255, 255, 255), font=font)  # iterate over textwrap and fix each line position in center
+
+                buffer = BytesIO()
+                template.save(buffer, format='PNG')
+                buffer.seek(0)
+
+                file = discord.File(buffer, filename="captioned.png")
+                await ctx.send(file=file)
+
+            else:
+                await ctx.send("reply to a message to create a caption")
+
+        except Exception as e:
+            await ctx.send(e)
+
     async def handle_error(self, ctx, error):
         """ Error handler """
         print(f'Error occurred: {error}')
@@ -131,9 +179,6 @@ class Commands(commands.Cog):
             print(f"Unexpected error: {error}")
 
         await ctx.send(embed=embed)
-
-    def cog_unload(self):
-        self.client.loop.create_task(self.reddit.close())
 
 async def setup(client):
     await client.add_cog(Commands(client))

@@ -1,4 +1,6 @@
-its almost finished
 1. auto reply format through ai api
+        later
 2. caption creation(one more try)
-3. 
+        remember to put on timestamp on final footer
+        textwrap is shifting to left make sure to iterate over each line and set its position on center.
+3. maybe emoji add as well?
