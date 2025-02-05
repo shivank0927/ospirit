@@ -1,4 +1,4 @@
-# ospirit Discord Bot
+# ospirit discord bot
 
 The **ospirit Discord Bot** is designed to provide a wide array of moderation tools and member-based commands, enhancing server management and user engagement. It integrates various functionalities such as user warnings, kicks, bans, message deletions, and other moderation tools, along with commands specifically for server members to manage their profiles, settings, and activities.
 
@@ -20,10 +20,12 @@ The **ospirit Discord Bot** is designed to provide a wide array of moderation to
   - `avatar`: Fetches and displays the avatar of a user.
   - `ping`: Checks the bot’s latency to the server.
   - `quote`: Provides a random or specific quote when requested by a user.
+  - `caption`: Returns a formatted embed of a message referenced by command user.
 
 ## Installation
+- The bot is not hosted online, to use the code you have to clone the repository and install the dependencies.
 
-Clone the repository and install the provided dependencies from `requirements.txt`:
+- Clone the repository and install the provided dependencies from `dependencies.txt`:
 
 ```sh
 git clone https://github.com/shivank0927/ospirit

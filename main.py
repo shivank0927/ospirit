@@ -3,67 +3,72 @@ import discord
 from discord.ext import commands
 import asyncio
 
+# Bot intents setup
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 intents.guilds = True
 
+# Bot instance
 client = commands.Bot(command_prefix='.', intents=intents)
 
+# Error Embed Utility
 def error_embed(title, description):
-    """ Error Handler """
+    """Creates an error embed message."""
     return discord.Embed(title=title, description=description, color=0xFF0000)
 
 @client.event
 async def on_ready():
+    """Triggered when the bot is ready."""
     await client.change_presence(status=discord.Status.idle)
     print("Bot started and ready!")
 
 @client.event
 async def on_message_delete(message):
+    """Logs deleted messages in a 'logs' channel."""
     if not message.guild or message.author.bot:
         return
-    LogChannel = discord.utils.get(message.guild.channels, name="logs", type=discord.ChannelType.text)
-    if LogChannel:
-        if LogChannel.permissions_for(message.guild.me).send_messages:
-            embed = discord.Embed(title=f"{message.author} deleted a message in {message.channel}", description=f"**Content:** {message.content}", color=0xFF0000)
-            await LogChannel.send(embed=embed)
-        else:
-            print(f"Bot doesn't have permission to send messages in the logs channel.")
+    
+    log_channel = discord.utils.get(message.guild.channels, name="logs", type=discord.ChannelType.text)
+    
+    if log_channel and log_channel.permissions_for(message.guild.me).send_messages:
+        embed = discord.Embed(
+            title=f"Message Deleted in #{message.channel}",
+            description=f"**Author:** {message.author}\n**Content:** {message.content}",
+            color=0xFF0000
+        )
+        await log_channel.send(embed=embed)
     else:
-        print(f"No logs channel in {message.guild.name}")
+        print(f"Log channel missing or bot lacks permissions in {message.guild.name}")
 
 @client.event
-async def on_message_edit(message_before, message_after):
-    if not message_before.guild or message_before.author.bot:
+async def on_message_edit(before, after):
+    """Logs edited messages in a 'logs' channel."""
+    if not before.guild or before.author.bot or before.content == after.content:
         return
-    LogChannel = discord.utils.get(message_before.guild.channels, name='logs', type=discord.ChannelType.text)
-    if LogChannel:
-        if LogChannel.permissions_for(message_before.guild.me).send_messages:
-            embed = discord.Embed(title=f"{message_before.author.name} has edited a message in {message_before.channel}", color=0xFF0000)
-            embed.add_field(name="Message Before: ", value=f"{message_before.content}", inline=False)
-            embed.add_field(name="Message After:", value=f"{message_after.content}", inline=False)
-            await LogChannel.send(embed=embed)
-        else:
-            print(f"Bot doesn't have permission to send messages in the logs channel.")
-    else:
-        print(f"No logs channel in {message_before.guild.name}")
+    
+    log_channel = discord.utils.get(before.guild.channels, name="logs", type=discord.ChannelType.text)
 
-@client.command()
-async def hello(ctx):
-    """ Says hello """
-    embed = discord.Embed(
-        title="Hello",
-        description="Hello!, How are you doing?",
-        color=0x00FF00
-    )
-    await ctx.send(embed=embed)
+    if log_channel and log_channel.permissions_for(before.guild.me).send_messages:
+        embed = discord.Embed(
+            title=f"Message Edited in #{before.channel}",
+            color=0xFFA500
+        )
+        embed.add_field(name="Before:", value=before.content, inline=False)
+        embed.add_field(name="After:", value=after.content, inline=False)
+        embed.set_footer(text=f"Edited by {before.author}")
+        await log_channel.send(embed=embed)
+    else:
+        print(f"Log channel missing or bot lacks permissions in {before.guild.name}")
 
 @client.event
 async def on_message(message):
-    await client.process_commands(message) 
+    """Processes commands and prevents bot from responding to itself."""
+    if message.author.bot:
+        return
+    await client.process_commands(message)
 
-async def load_cogs():
+async def load_cogs(): # Loads all cogs from directory "cogs"
     print("Loading cogs...")
     cogs_directory = "./cogs"
     for filename in os.listdir(cogs_directory):
@@ -74,9 +79,9 @@ async def load_cogs():
             except Exception as e:
                 print(f"Failed to load cog {filename}: {e}")
 
-async def main():
+async def main(): # Start the bot
     await load_cogs()
     async with client:
-        await client.start(os.getenv("token"))
+        await client.start(os.getenv("TOKEN"))
 
 asyncio.run(main())
