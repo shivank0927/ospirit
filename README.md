@@ -25,7 +25,7 @@ A basic discord bot with several functionalities.
 ## Installation
 - The bot is not hosted online, to use the code you have to clone the repository and install the dependencies.
 
-- Clone the repository and install the provided dependencies from `dependencies.txt`:
+- Clone the repository and install the provided dependencies from `requirements.txt`:
 
 ```sh
 git clone https://github.com/shivank0927/ospirit
